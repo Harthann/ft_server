@@ -1,0 +1,1 @@
+docker build -t ft_server . && docker run ft_server
