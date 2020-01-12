@@ -1,6 +1,7 @@
 FROM debian:buster
 
 MAINTAINER nieyraud
+
 #########################
 #	Dependencies		#
 #########################
@@ -16,16 +17,26 @@ RUN wget https://fr.wordpress.org/latest-fr_FR.tar.gz && \
     tar -xvf latest-fr_FR.tar.gz
 RUN mv wordpress /var/www/html/. && \
     chown -R www-data:www-data var/www/html/wordpress/ && \
-    chmod -R 755 var/www/html/wordpress/
+    chmod -R 755 var/www/html/wordpress/&& \
+	mkdir /var/www/html/phpmyadmin/tmp && \
+	chmod 777 /var/www/html/phpmyadmin/tmp
+RUN mkdir /etc/nginx/ssl
+RUN rm var/www/html/index.nginx-debian.html
+
+#########################################
+# CREATING SELFSIGNED SSL CERTFICATION	#
+#########################################
+
 
 #########################
 #	  COPYING FILES		#
 #########################
 
 COPY ./default /etc/nginx/sites-available/.
-COPY ./index.nginx-debian.html var/www/html/index.nginx-debian.html
+# COPY ./index.nginx-debian.html var/www/html/index.nginx-debian.html
 COPY ./wp-config.php var/www/html/wordpress/wp-config.php
 COPY ./admin.sql .
+COPY ./config.inc.php /var/www/html/phpmyadmin/config.inc.php
 
 #########################
 #	Clear Cache			#
@@ -39,6 +50,8 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 CMD	service mysql start && \
 	mysql -u root < admin.sql && \
+	mysql -u root < /var/www/html/phpmyadmin/sql/create_tables.sql && \
+	openssl req -nodes -x509 -newkey  rsa:2048 -days 365 -subj "/C=FR/ST=France/L=Paris/O=42/OU=127.0.0.1" -keyout /etc/nginx/ssl/localhost.key -out /etc/nginx/ssl/certificate.localhost.crt && \
 	service nginx start && \
 	service php7.3-fpm start && \
 	bash

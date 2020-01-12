@@ -21,11 +21,18 @@
 server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
+	server_name localhost;
+	return 301 https://$host$request_uri;
+}
 
+server {
 	# SSL configuration
 	#
 	listen 443 ssl default_server;
 	listen [::]:443 ssl default_server;
+	ssl on;
+	ssl_certificate /etc/nginx/ssl/certificate.localhost.crt;
+	ssl_certificate_key /etc/nginx/ssl/localhost.key;
 	#
 	# Note: You should disable gzip for SSL traffic.
 	# See: https://bugs.debian.org/773332
@@ -48,7 +55,7 @@ server {
 	location / {
 		# First attempt to serve request as file, then
 		# as directory, then fall back to displaying a 404.
-		autoindex off;
+		autoindex on;
 		try_files $uri $uri/ =404;
 	}
 
