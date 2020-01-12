@@ -1,1 +1,0 @@
-docker stop ft_server && docker container rm ft_server
