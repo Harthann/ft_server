@@ -32,11 +32,11 @@ RUN rm var/www/html/index.nginx-debian.html
 #	  COPYING FILES		#
 #########################
 
-COPY ./default /etc/nginx/sites-available/.
+COPY ./srcs/default /etc/nginx/sites-available/.
 # COPY ./index.nginx-debian.html var/www/html/index.nginx-debian.html
-COPY ./wp-config.php var/www/html/wordpress/wp-config.php
-COPY ./admin.sql .
-COPY ./config.inc.php /var/www/html/phpmyadmin/config.inc.php
+COPY ./srcs/wp-config.php var/www/html/wordpress/wp-config.php
+COPY ./srcs/admin.sql .
+COPY ./srcs/config.inc.php /var/www/html/phpmyadmin/config.inc.php
 
 #########################
 #	Clear Cache			#

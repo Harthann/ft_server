@@ -1,0 +1,1 @@
+docker run -it -d -p 80:80 -p 443:443 --name ft_server ft_server
